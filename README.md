@@ -70,11 +70,6 @@ operaid/
 │   ├── validation_test.yaml
 │   ├── temperature_sweep.yaml
 │   └── scenario_deep_dive.yaml
-├── paper/
-│   ├── main.tex               # Paper source
-│   ├── references.bib         # Bibliography
-│   ├── figures/               # Generated plots + architecture diagram
-│   └── tables/                # Generated LaTeX tables
 └── suite_results/             # Experiment run outputs (git-ignored)
 ```
 
