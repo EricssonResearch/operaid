@@ -1,0 +1,24 @@
+# Scenario 1: NetworkPolicy blocks AMF -> SMF SBI communication (port 7777)
+# UEs can register but PDU sessions fail.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-amf-to-smf
+  namespace: open5gs
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: smf
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: nrf
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: scp
+      ports:
+        - port: 7777
+          protocol: TCP

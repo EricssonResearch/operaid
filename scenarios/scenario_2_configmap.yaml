@@ -1,0 +1,15 @@
+# Scenario 2: SMF references a non-existent ConfigMap, causing CrashLoopBackOff.
+# The deployment's envFrom references 'smf-extra-config-missing' instead of 'smf-extra-config'.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open5gs-smf
+  namespace: open5gs
+spec:
+  template:
+    spec:
+      containers:
+        - name: smf
+          envFrom:
+            - configMapRef:
+                name: smf-extra-config-missing

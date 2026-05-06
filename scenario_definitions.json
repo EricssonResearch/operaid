@@ -1,0 +1,54 @@
+{
+  "_note": "This file is retained for backward compatibility and documentation. Scenario definitions are now loaded from deployment profiles (deployments/*.json). See deployments/open5gs.json for the active Open5GS scenario configuration.",
+  "scenarios": {
+    "1": {
+      "name": "scenario_1_netpol",
+      "fault_type": "Network",
+      "description": "NetworkPolicy blocks inter-service communication. Services can register but sessions fail.",
+      "inject_file": "scenarios/scenario_1_netpol.yaml",
+      "inject_method": "kubectl apply",
+      "root_cause": "A NetworkPolicy blocks ingress traffic between services, preventing session establishment.",
+      "remediation_steps": [
+        "kubectl delete networkpolicy <policy-name> -n <namespace>"
+      ],
+      "verification": "All expected deployments are ready and sessions can be established.",
+      "difficulty": "medium",
+      "requires_tools": ["get_pods", "get_networkpolicies", "get_events"]
+    },
+    "2": {
+      "name": "scenario_2_configmap",
+      "fault_type": "Configuration",
+      "description": "Deployment references non-existent ConfigMap in envFrom, causing CrashLoopBackOff.",
+      "inject_method": "kubectl patch",
+      "root_cause": "Deployment has envFrom referencing a non-existent ConfigMap, causing the pod to fail to start.",
+      "remediation_steps": [
+        "kubectl patch deployment <deployment-name> -n <namespace> --type=json -p='[{\"op\":\"remove\",\"path\":\"/spec/template/spec/containers/0/envFrom\"}]'"
+      ],
+      "verification": "Affected pod restarts and becomes ready. All expected deployments are available.",
+      "difficulty": "hard",
+      "requires_tools": ["get_pods", "describe_pod", "get_events", "get_deployment"]
+    },
+    "3": {
+      "name": "scenario_3_scale",
+      "fault_type": "Scaling",
+      "description": "Critical deployment scaled to zero replicas. The service is down; sessions cannot be established.",
+      "inject_method": "kubectl scale",
+      "root_cause": "Deployment has 0 replicas, so no pod is running.",
+      "remediation_steps": [
+        "kubectl scale deployment <deployment-name> -n <namespace> --replicas=1"
+      ],
+      "verification": "Pod starts and becomes ready. All expected deployments are available.",
+      "difficulty": "easy",
+      "requires_tools": ["get_pods", "get_deployment"]
+    }
+  },
+  "fallback": {
+    "method": "nuke_and_redeploy",
+    "description": "When LLM remediation fails, the entire deployment is torn down and redeployed from scratch. This ensures a clean state for the next experiment run.",
+    "script": "nuke-deployment.sh"
+  },
+  "metadata": {
+    "note": "Deployment-specific values (namespace, deployment names, ports) are now defined in deployment profiles under deployments/*.json",
+    "verification_timeout_s": 120
+  }
+}

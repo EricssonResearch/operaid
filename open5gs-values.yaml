@@ -1,0 +1,28 @@
+# Disable Bitnami MongoDB (broken images), use standalone deployment
+dbURI: "mongodb://open5gs-mongodb/open5gs"
+
+mongodb:
+  enabled: false
+
+# Disable 4G/LTE EPC components (not part of 5G Core)
+mme:
+  enabled: false
+sgwc:
+  enabled: false
+sgwu:
+  enabled: false
+hss:
+  enabled: false
+pcrf:
+  enabled: false
+
+# Enable WebUI (part of 11 NFs)
+webui:
+  enabled: true
+  image:
+    tag: "2.6.2"
+
+smf:
+  config:
+    pcrf:
+      enabled: false

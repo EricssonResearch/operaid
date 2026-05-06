@@ -1,0 +1,57 @@
+{
+  "name": "open5gs",
+  "description": "Open5GS 5G Core network deployed on Kubernetes via openverso-charts",
+  "namespace": "open5gs",
+  "deployment": {
+    "release_name": "open5gs",
+    "releases": ["open5gs"],
+    "ueransim": true
+  },
+  "components": {
+    "amf": { "deployment": "open5gs-amf" },
+    "ausf": { "deployment": "open5gs-ausf" },
+    "bsf": { "deployment": "open5gs-bsf" },
+    "nrf": { "deployment": "open5gs-nrf" },
+    "nssf": { "deployment": "open5gs-nssf" },
+    "pcf": { "deployment": "open5gs-pcf" },
+    "smf": { "deployment": "open5gs-smf" },
+    "udm": { "deployment": "open5gs-udm" },
+    "udr": { "deployment": "open5gs-udr" },
+    "upf": { "deployment": "open5gs-upf" },
+    "webui": { "deployment": "open5gs-webui" }
+  },
+  "context_prompt": "Open5GS is a 5G Core network running on Kubernetes with the following NFs:\nAMF, AUSF, BSF, NRF, NSSF, PCF, SMF, UDM, UDR, UPF, WebUI.\nUERANSIM provides the gNB and UE simulators.\nAll NFs communicate via SBI (Service-Based Interface) on port 7777.",
+  "name_prefixes": {
+    "default": "open5gs-"
+  },
+  "scenario_targets": {
+    "1": { "description": "A fault has been injected into the Open5GS 5G Core deployment in the '{namespace}' namespace. UEs can register but PDU session establishment is failing. Diagnose the root cause and provide remediation steps." },
+    "2": { "description": "A fault has been injected into the Open5GS 5G Core deployment in the '{namespace}' namespace. One of the NF pods is in CrashLoopBackOff. Diagnose the root cause and provide remediation steps." },
+    "3": { "description": "A fault has been injected into the Open5GS 5G Core deployment in the '{namespace}' namespace. The user plane is not functioning — PDU sessions cannot be established. Diagnose the root cause and provide remediation steps." }
+  },
+  "fault_injection": {
+    "1": {
+      "method": "kubectl_apply",
+      "file": "scenarios/scenario_1_netpol.yaml"
+    },
+    "2": {
+      "method": "kubectl_patch",
+      "target_deployment": "open5gs-smf",
+      "patch": "[{\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/envFrom\",\"value\":[{\"configMapRef\":{\"name\":\"smf-extra-config-missing\"}}]}]"
+    },
+    "3": {
+      "method": "kubectl_scale",
+      "target_deployment": "open5gs-upf",
+      "replicas": 0
+    }
+  },
+  "health_check": {
+    "check_type": "deployments",
+    "expected_deployments": [
+      "open5gs-amf", "open5gs-ausf", "open5gs-bsf", "open5gs-nrf",
+      "open5gs-nssf", "open5gs-pcf", "open5gs-smf",
+      "open5gs-udm", "open5gs-udr", "open5gs-upf", "open5gs-webui"
+    ]
+  },
+  "custom_tools": []
+}

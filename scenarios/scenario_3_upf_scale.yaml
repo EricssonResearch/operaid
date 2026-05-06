@@ -1,0 +1,9 @@
+# Scenario 3: UPF scaled to zero replicas.
+# The user plane is down; PDU sessions cannot be established.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: open5gs-upf
+  namespace: open5gs
+spec:
+  replicas: 0

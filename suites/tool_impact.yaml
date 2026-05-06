@@ -1,0 +1,54 @@
+# OperAID Suite: Tool Impact Analysis
+# Evaluates 5 models × 2 conditions (all-tools, no-tools) × 3 scenarios × 30 runs = 900 runs
+name: tool-impact-analysis
+
+common:
+  profile: open5gs
+  scenarios: [1, 2, 3]
+  runs_per_scenario: 30
+  max_turns: 3
+  temperature: 0.0
+  max_tokens: 4096
+  base_url: "https://openrouter.ai/api/v1"
+  custom_tools: []
+
+experiments:
+  - name: "glm-5-all-tools"
+    model: "z-ai/glm-5"
+    use_tools: true
+
+  - name: "glm-5-no-tools"
+    model: "z-ai/glm-5"
+    use_tools: false
+
+  - name: "gpt-oss-120b-all-tools"
+    model: "openai/gpt-oss-120b"
+    use_tools: true
+
+  - name: "gpt-oss-120b-no-tools"
+    model: "openai/gpt-oss-120b"
+    use_tools: false
+
+  - name: "kimi-k2.5-all-tools"
+    model: "moonshotai/kimi-k2.5"
+    use_tools: true
+
+  - name: "kimi-k2.5-no-tools"
+    model: "moonshotai/kimi-k2.5"
+    use_tools: false
+
+  - name: "qwen3.5-35b-a3b-all-tools"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: true
+
+  - name: "qwen3.5-35b-a3b-no-tools"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: false
+
+  - name: "qwen3.5-397b-a17b-all-tools"
+    model: "qwen/qwen3.5-397b-a17b"
+    use_tools: true
+
+  - name: "qwen3.5-397b-a17b-no-tools"
+    model: "qwen/qwen3.5-397b-a17b"
+    use_tools: false

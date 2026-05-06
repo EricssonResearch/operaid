@@ -1,0 +1,33 @@
+# OperAID Suite: Deep dive into a single scenario with multiple models
+# Useful for per-scenario analysis. Override 'scenarios' per experiment.
+name: scenario-2-deep-dive
+
+common:
+  profile: open5gs
+  scenarios: [2]
+  runs_per_scenario: 30
+  max_turns: 3
+  temperature: 0.0
+  base_url: "https://openrouter.ai/api/v1"
+  custom_tools: []
+
+experiments:
+  - name: "kimi-k2.5-all-tools-s2"
+    model: "moonshotai/kimi-k2.5"
+    use_tools: true
+
+  - name: "qwen3.5-397b-a17b-all-tools-s2"
+    model: "qwen/qwen3.5-397b-a17b"
+    use_tools: true
+
+  - name: "qwen3.5-35b-a3b-all-tools-s2"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: true
+
+  - name: "gpt-oss-120b-all-tools-s2"
+    model: "openai/gpt-oss-120b"
+    use_tools: true
+
+  - name: "glm-5-all-tools-s2"
+    model: "z-ai/glm-5"
+    use_tools: true

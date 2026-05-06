@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    meta.helm.sh/release-name: open5gs
+    meta.helm.sh/release-namespace: open5gs
+  creationTimestamp: "2026-04-05T08:19:13Z"
+  generation: 2
+  labels:
+    app.kubernetes.io/instance: open5gs
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: smf
+    helm.sh/chart: smf-2.0.10
+  name: open5gs-smf
+  namespace: open5gs
+  resourceVersion: "821585"
+  uid: 0c63608c-2019-42c8-928a-5e7978b182a2
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: open5gs
+      app.kubernetes.io/name: smf
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: open5gs
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: smf
+        helm.sh/chart: smf-2.0.10
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: open5gs
+                  app.kubernetes.io/name: smf
+              namespaces:
+              - open5gs
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - args:
+        - open5gs-smfd
+        envFrom:
+        - configMapRef:
+            name: smf-extra-config-missing
+        image: docker.io/openverso/open5gs:2.6.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 600
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: sbi
+          timeoutSeconds: 5
+        name: open5gs-smf
+        ports:
+        - containerPort: 7777
+          name: sbi
+          protocol: TCP
+        - containerPort: 9090
+          name: metrics
+          protocol: TCP
+        - containerPort: 8805
+          name: pfcp
+          protocol: UDP
+        - containerPort: 2123
+          name: gtpc
+          protocol: UDP
+        - containerPort: 2152
+          name: gtpu
+          protocol: UDP
+        readinessProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: sbi
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/open5gs/etc/open5gs/
+          name: config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1001
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: open5gs-smf
+        name: config
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2026-04-05T08:19:45Z"
+    lastUpdateTime: "2026-04-05T08:19:45Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2026-04-05T08:19:13Z"
+    lastUpdateTime: "2026-04-05T08:20:21Z"
+    message: ReplicaSet "open5gs-smf-57df9f995b" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  terminatingReplicas: 0
+  updatedReplicas: 1

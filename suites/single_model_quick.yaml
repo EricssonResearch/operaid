@@ -1,0 +1,21 @@
+# OperAID Suite: Quick single-model test (3 scenarios × 3 runs = 9 runs)
+# Useful for validating a model before running the full 900-run suite.
+name: single-model-quick
+
+common:
+  profile: open5gs
+  scenarios: [1, 2, 3]
+  runs_per_scenario: 3
+  max_turns: 3
+  temperature: 0.0
+  base_url: "https://openrouter.ai/api/v1"
+  custom_tools: []
+
+experiments:
+  - name: "qwen3.5-35b-a3b-all-tools"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: true
+
+  - name: "qwen3.5-35b-a3b-no-tools"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: false

@@ -1,0 +1,17 @@
+# OperAID Validation Suite
+# 1 model × 3 scenarios × 1 run = 3 total runs
+name: validation-test
+
+common:
+  profile: open5gs
+  scenarios: [1, 2, 3]
+  runs_per_scenario: 1
+  max_turns: 3
+  temperature: 0.0
+  base_url: "https://openrouter.ai/api/v1"
+  custom_tools: []
+
+experiments:
+  - name: "qwen3.5-35b-a3b-all-tools"
+    model: "qwen/qwen3.5-35b-a3b"
+    use_tools: true
