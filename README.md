@@ -2,6 +2,8 @@
 
 **OperAID** is an open-source testbed for evaluating LLM agents as autonomous operators of 5G Core networks deployed on Kubernetes. It provides a closed-loop pipeline: **Fault Injection → Agentic Diagnosis → Remediation → Execution-Based Verification**.
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/EricssonResearch/operaid)
+
 ## Quick Start
 
 ```bash
